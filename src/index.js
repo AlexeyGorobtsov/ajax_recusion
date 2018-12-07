@@ -9,8 +9,7 @@ class Form {
         this.count = 0;
         this.start = true;
         this.str = {
-            count: 0,
-            condition: 0,
+            condition: true,
             arr: [],
         };
     }
@@ -61,12 +60,8 @@ class Form {
     }
 
     getPars(obj, v, str = '') {
-        //TODO 
-        // console.log(this.str.count)
-        if(this.str.condition === 0 ) {
-            this.str.count = ++this.str.count;
+        if(this.str.condition) {
             this.str[`${JSON.stringify(obj)}`] ='';
-
         }
         if (this.str[`${JSON.stringify(obj)}`] === '') {
             str += `${v}=${obj[v]}`;
@@ -74,15 +69,15 @@ class Form {
             str = `${this.str[`${JSON.stringify(obj)}key`]}%5B${v}%5D=${obj[v]}`;
         }
         this.str.arr.push(str);
-        console.log(this.str)
+        console.log(this.str);
     }
 
     getNewStr(obj) {
         for (let v in obj) {
             if(typeof obj[v] === 'object') {
                 this.str[`${JSON.stringify(obj[v])}`] = v;
-                if(this.str.condition === 0) {
-                    this.str.condition = ++this.str.condition;
+                if(this.str.condition === true) {
+                    this.str.condition = false;
                     this.str[`${JSON.stringify(obj[v])}key`] =
                         this.str[`${JSON.stringify(obj)}`]+v;
                 } else {
@@ -94,8 +89,6 @@ class Form {
                 this.getPars(obj, v);
             }
         }
-        this.str.count = 0;
-        this.str.condition =  0;
         return this.str.arr.join('&');
     }
 
@@ -111,7 +104,10 @@ class Form {
             this.cleanObject(this.form);
             console.log(this.data);
             this.ajax('./server.php', {a: 1, b: {z: 1, x: {v:1, z : {t:1}}, c: 3}, z: 3});
-            this.str.arr = [];
+            this.str = {
+                condition: true,
+                arr: [],
+            };
         });
     }
 }
